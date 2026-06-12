@@ -86,11 +86,15 @@
   .sel .x { position:absolute; top:2px; right:5px; font-weight:700; opacity:.75; }
   .sel.tmp { background:rgba(59,130,246,.45); box-shadow:none; }
 
-  /* ---- share panel ---- */
-  .panel { border:1px solid var(--line); border-radius:14px; padding:14px; margin:14px 10px 20px; box-shadow:0 2px 10px rgba(0,0,0,.04); }
-  .panel-head { display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
-  .panel-head h2 { font-size:14px; font-weight:600; }
-  .panel-head input[type="text"] { border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-size:13px; font-family:inherit; }
+  /* ---- layout: calendar left, share panel right ---- */
+  .main { display:flex; gap:14px; align-items:flex-start; }
+  .main .cal { flex:1; min-width:0; }
+  .panel { width:300px; flex-shrink:0; position:sticky; top:10px; border:1px solid var(--line); border-radius:14px; padding:14px; margin:0 0 20px; box-shadow:0 2px 10px rgba(0,0,0,.04); }
+  .panel h2 { font-size:14px; font-weight:600; }
+  .panel input[type="text"] { border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-size:13px; font-family:inherit; }
+  .panel-btns { display:flex; gap:8px; margin-top:12px; }
+  .panel-btns .primary { flex:1; }
+  @media (max-width: 900px){ .main { flex-direction:column; } .panel { width:100%; position:static; } }
   label.small { font-size:12px; color:var(--muted2); }
   #preview { border:1px dashed var(--line); border-radius:10px; padding:12px; font-size:14px; line-height:1.7; min-height:56px; }
   #preview a { color:var(--blue-dark); font-weight:600; text-decoration:underline; }
@@ -142,23 +146,25 @@
     </div>
     <div class="statusline" id="status"></div>
 
-    <div class="cal">
-      <div class="cal-head" id="calHead"></div>
-      <div class="scroller" id="scroller">
-        <div class="cal-body" id="calBody"></div>
+    <div class="main">
+      <div class="cal">
+        <div class="cal-head" id="calHead"></div>
+        <div class="scroller" id="scroller">
+          <div class="cal-body" id="calBody"></div>
+        </div>
       </div>
-    </div>
 
-    <div class="panel">
-      <div class="panel-head">
+      <div class="panel">
         <h2>Share availability</h2>
-        <label class="small">Invite title <input type="text" id="subj" size="26"></label>
-        <div class="grow"></div>
-        <button class="btn" id="clearBtn">Clear</button>
-        <button class="btn primary" id="copyBtn">Copy for email</button>
+        <label class="small" style="display:block;margin:10px 0 4px">Invite title</label>
+        <input type="text" id="subj" style="width:100%">
+        <div id="preview" style="margin-top:12px"><span style="color:var(--muted2)">Click or drag on the calendar to paint availability slots — a hyperlinked snippet appears here. Each link opens a pre-filled Outlook invite addressed to you; the recipient just hits Send.</span></div>
+        <div class="hint">Click a painted slot to remove it. Standard slots are 30 min; drag for longer (snaps to 15 min). Times shown in <b id="tzLabel"></b>.</div>
+        <div class="panel-btns">
+          <button class="btn" id="clearBtn">Clear</button>
+          <button class="btn primary" id="copyBtn">Copy for email</button>
+        </div>
       </div>
-      <div id="preview"><span style="color:var(--muted2)">Click or drag on the calendar to paint availability slots — a hyperlinked snippet appears here. Each link opens a pre-filled Outlook invite addressed to you; the recipient just hits Send.</span></div>
-      <div class="hint">Click a painted slot to remove it. Standard slots are 30 min; drag for longer (snaps to 15 min). Times shown in <b id="tzLabel"></b>.</div>
     </div>
   </div>
 </div>
