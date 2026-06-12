@@ -5,63 +5,77 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WeTransact — Availability Picker</title>
 <script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@3/lib/msal-browser.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root { color-scheme: light;
-    /* WeTransact brand */
     --purple:#7C6FF7;        /* Light Accent */
-    --purple-dark:#5E43C8;   /* primary hover/links */
+    --purple-dark:#5E43C8;   /* hover/links */
     --purple-light:#e8e5ff;  /* Light Contrast */
-    --ink:#2C1C6C;           /* deep ink */
+    --ink:#2C1C6C;
     --muted:#6b7280; --line:#E2DBFF; --bg:#FBF9FF; --card:#ffffff;
   }
   * { box-sizing:border-box; margin:0; padding:0; }
-  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--ink); font-size:14px; }
+  body { font-family:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--bg); color:var(--ink); font-size:14px; }
   .wrap { max-width:1100px; margin:0 auto; padding:16px; }
 
   header { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
-  header h1 { font-size:17px; }
+  header .logo { height:30px; display:block; }
+  header .sub { font-size:13px; color:var(--muted); border-left:1px solid var(--line); padding-left:12px; }
   header .grow { flex:1; }
   .who { font-size:13px; color:var(--muted); }
-  .linklike { background:none; border:none; color:var(--purple-dark); cursor:pointer; font-size:13px; text-decoration:underline; }
+  .linklike { background:none; border:none; color:var(--purple-dark); cursor:pointer; font-size:13px; text-decoration:underline; font-family:inherit; }
 
   .signin { text-align:center; padding:80px 20px; }
-  .signin h2 { font-size:20px; margin-bottom:8px; }
+  .signin h2 { font-size:22px; margin-bottom:8px; font-weight:600; }
   .signin p { color:var(--muted); margin-bottom:24px; }
 
   .toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:14px; }
   .toolbar .grow { flex:1; }
-  .seg { display:inline-flex; border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--card); }
-  .seg button { border:none; background:none; padding:7px 12px; cursor:pointer; font-size:13px; color:var(--muted); }
-  .seg button.on { background:var(--purple); color:#fff; }
-  .btn { border:1px solid var(--line); background:var(--card); border-radius:8px; padding:7px 14px; cursor:pointer; font-size:13px; color:var(--ink); }
+  .seg { display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden; background:var(--card); }
+  .seg button { border:none; background:none; padding:7px 14px; cursor:pointer; font-size:13px; color:var(--muted); font-family:inherit; }
+  .seg button.on { background:var(--purple); color:#fff; font-weight:500; }
+  .btn { border:1px solid var(--line); background:var(--card); border-radius:999px; padding:7px 16px; cursor:pointer; font-size:13px; color:var(--ink); font-family:inherit; }
   .btn:hover { border-color:var(--purple); }
   .btn.primary { background:var(--purple); border-color:var(--purple); color:#fff; font-weight:600; }
   .btn.primary:hover { background:var(--purple-dark); }
-  .btn.big { padding:12px 28px; font-size:15px; border-radius:10px; }
-  select, input[type="text"] { border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-size:13px; background:var(--card); color:var(--ink); max-width:230px; }
+  .btn.big { padding:12px 30px; font-size:15px; }
+  select, input[type="text"] { border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-size:13px; background:var(--card); color:var(--ink); max-width:230px; font-family:inherit; }
   label.small { font-size:12px; color:var(--muted); }
 
   .status { font-size:13px; color:var(--muted); margin:8px 0; }
-  .grid { display:grid; gap:10px; align-items:start; }
-  .day { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:10px; min-height:80px; box-shadow:0 1px 3px rgba(44,28,108,.06); }
-  .day h3 { font-size:13px; font-weight:600; text-align:center; padding-bottom:8px; border-bottom:1px solid var(--line); margin-bottom:8px; }
-  .day h3 .dnum { color:var(--muted); font-weight:400; font-size:12px; display:block; }
-  .slot { display:block; width:100%; margin:4px 0; padding:7px 4px; text-align:center; font-size:13px; border:1px solid var(--line); border-radius:8px; background:#fff; cursor:pointer; color:var(--ink); transition:all .1s; }
-  .slot:hover { border-color:var(--purple); background:var(--purple-light); }
-  .slot.sel { background:var(--purple); border-color:var(--purple); color:#fff; font-weight:600; }
-  .busy { display:block; width:100%; margin:4px 0; padding:6px 6px; font-size:11.5px; border-radius:8px; background:#F2EEFF; border:1px dashed #C9BCFF; color:var(--muted); text-align:left; line-height:1.35; cursor:default; }
-  .busy .bt { font-weight:600; color:#402C93; }
-  .busy .bn { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; }
-  .noslots { font-size:12px; color:var(--muted); text-align:center; padding:12px 0; }
 
-  .panel { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; margin-top:16px; box-shadow:0 1px 3px rgba(44,28,108,.06); }
+  /* ---- Vimcal-style week grid ---- */
+  .cal { background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 2px 8px rgba(44,28,108,.07); overflow:hidden; }
+  .cal-head { display:grid; border-bottom:1px solid var(--line); }
+  .cal-head .gut { }
+  .cal-head .dh { text-align:center; padding:10px 4px; font-size:13px; font-weight:600; border-left:1px solid var(--line); }
+  .cal-head .dh .dnum { color:var(--muted); font-weight:400; font-size:11.5px; display:block; }
+  .cal-body { display:grid; position:relative; }
+  .gutter { position:relative; }
+  .gutter .hl { position:absolute; right:6px; transform:translateY(-50%); font-size:10.5px; color:var(--muted); }
+  .daycol { position:relative; border-left:1px solid var(--line); }
+  .daycol .gridlines { position:absolute; inset:0;
+    background:repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--hourpx) - 1px), var(--line) calc(var(--hourpx) - 1px), var(--line) var(--hourpx));
+    opacity:.55; pointer-events:none; }
+  .evt { position:absolute; left:4px; right:4px; border-radius:8px; overflow:hidden; }
+  .slot { border:1.5px solid var(--purple); background:#fff; color:var(--purple-dark); cursor:pointer; font-size:11.5px; font-weight:600;
+    display:flex; align-items:center; justify-content:center; transition:all .08s; font-family:inherit; }
+  .slot:hover { background:var(--purple-light); }
+  .slot.sel { background:var(--purple); border-color:var(--purple); color:#fff; }
+  .busy { background:#F2EEFF; border:1px dashed #C9BCFF; color:#402C93; font-size:10.5px; padding:2px 6px; line-height:1.3; cursor:default; }
+  .busy .bn { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; font-weight:500; }
+  .busy .bt { font-weight:400; color:var(--muted); font-size:10px; }
+
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px; margin-top:16px; box-shadow:0 2px 8px rgba(44,28,108,.07); }
   .panel-head { display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
-  .panel-head h2 { font-size:14px; }
+  .panel-head h2 { font-size:14px; font-weight:600; }
   .panel-head .grow { flex:1; }
-  #preview { border:1px dashed var(--line); border-radius:8px; padding:12px; font-size:14px; line-height:1.7; min-height:60px; }
+  #preview { border:1px dashed var(--line); border-radius:10px; padding:12px; font-size:14px; line-height:1.7; min-height:60px; }
   #preview a { color:var(--purple-dark); font-weight:600; text-decoration:underline; }
   .hint { font-size:12px; color:var(--muted); margin-top:8px; }
-  .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:10px 18px; border-radius:8px; font-size:13px; opacity:0; transition:opacity .2s; pointer-events:none; }
+  .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:10px 18px; border-radius:999px; font-size:13px; opacity:0; transition:opacity .2s; pointer-events:none; }
   .toast.show { opacity:1; }
   .spin { display:inline-block; width:14px; height:14px; border:2px solid var(--line); border-top-color:var(--purple); border-radius:50%; animation:sp 0.8s linear infinite; vertical-align:-2px; margin-right:6px; }
   @keyframes sp { to { transform:rotate(360deg); } }
@@ -71,7 +85,23 @@
 <body>
 <div class="wrap">
   <header>
-    <h1><span style="color:#7C6FF7">we</span><span style="color:#2C1C6C">transact</span> <span style="font-weight:400;color:var(--muted)">· Availability</span></h1>
+    <svg class="logo" viewBox="35 215 640 105" xmlns="http://www.w3.org/2000/svg" aria-label="WeTransact">
+      <style>.lg1{fill:#7C6FF7}.lg2{fill:#2C1C6C}</style>
+      <circle class="lg1" cx="56.1" cy="231.01" r="9.71"/><circle class="lg1" cx="156.1" cy="231.01" r="9.71"/>
+      <path class="lg1" d="M270.34,267.48c-.55,0-1,.45-1,1v18.2c0,4.38-1.79,8.49-4.91,11.29-2.58,2.31-4.84,2.78-6.79,2.75,2.03-3.57,3.09-7.6,3.09-11.74l-.05-1.47c-.06-7.36-6.08-13.34-13.44-13.34s-13.29,5.9-13.44,13.18v1.04c0,4.32,1.14,8.56,3.29,12.32-2.99.05-5.85-1.03-8.09-3.08-2.42-2.21-3.8-5.36-3.8-8.63l-.03-20.61c0-.55-.45-1-1-1h-10.05c-.55,0-1,.45-1,1v20.08c0,12.34,8.97,22.73,20.87,24.16,4.61.56,9.23-.21,13.36-2.23,2.97,1.47,6.13,2.28,9.4,2.4.29.01.58.02.87.02,6.2,0,12.04-2.35,16.52-6.68,4.7-4.53,7.29-10.62,7.29-17.13l-.03-20.52c0-.55-.45-1-1-1h-10.05ZM247.22,300.05c-1.83-2.93-2.79-6.56-2.79-9.94l-.08-2.94c0-1.46,1.3-2.65,2.89-2.65s2.88,1.18,2.89,2.63v2.45c0,3.54-1.01,7.35-2.93,10.45Z"/>
+      <path class="lg1" d="M309.78,301.01c3.28,0,6.13-1.17,7.94-2.84.32-.3.8-.33,1.18-.11l8.86,5.09c.54.31.69,1.03.31,1.52-4.3,5.37-10.55,8.13-18.46,8.13-15.04,0-24.36-10.11-24.36-23.22s9.5-23.22,23.39-23.22c12.84,0,22.34,9.94,22.34,23.22,0,1.85-.18,3.61-.53,5.28h-31.22c1.67,4.57,5.72,6.16,10.55,6.16ZM317.87,285c-1.41-5.1-5.37-6.95-9.32-6.95-5.01,0-8.36,2.46-9.59,6.95h18.91Z"/>
+      <circle class="lg2" cx="106.06" cy="243.16" r="9.71"/>
+      <path class="lg2" d="M163.77,260.78c0-4.21-3.43-7.63-7.64-7.63s-7.64,3.43-7.64,7.64v25.54c0,6.98-2.53,13.61-7.12,18.67-7.25,7.98-13.51,8.67-18.67,8.28l-3.49-.26,1.85-2.97c3.85-6.21,5.89-13.36,5.89-20.66l-.08-2.65c-.09-11.41-9.44-20.69-20.84-20.69s-20.52,9.02-20.84,20.24v2.01c0,7.67,2.16,15.19,6.23,21.73l1.83,2.93-3.44.3c-6.82.6-13.34-1.6-18.37-6.2-4.95-4.53-7.79-10.97-7.79-17.66l-.05-28.68c0-4.21-3.43-7.63-7.64-7.63s-7.64,3.43-7.64,7.64v29.99c0,14.97,8.63,28.42,21.97,34.25,11.77,5.15,24.19,4.99,34.96-.44l.96-.48.96.49c5.02,2.56,10.37,3.96,15.89,4.16,10.73.38,20.97-3.52,28.72-11,7.76-7.49,12.04-17.54,12.04-28.29l-.05-28.6ZM111.15,288.63c0,6.48-1.88,12.66-5.15,17.9-3.11-4.95-4.94-10.77-4.94-17.04l-.08-3.66h0c0-2.81,2.28-5.09,5.09-5.09s5.09,2.28,5.09,5.09h0v2.8Z"/>
+      <path class="lg2" d="M362.01,268.42v10.61c0,.57-.46,1.03-1.03,1.03h-8.03v15.57c0,3.54,2.85,4.08,7.99,3.84.58-.03,1.07.44,1.07,1.03v9.94c0,.53-.41.98-.94,1.03-16.48,1.47-21.31-3.75-21.31-15.83v-15.57h-6.01c-.57,0-1.03-.46-1.03-1.03v-10.61c0-.57.46-1.03,1.03-1.03h27.23c.57,0,1.03.46,1.03,1.03Z"/>
+      <path class="lg2" d="M393.2,267.77v12.73c0,.6-.5,1.07-1.1,1.02-5.34-.43-12.1,2.02-12.1,10.16v18.85c0,.57-.46,1.03-1.03,1.03h-11.13c-.57,0-1.03-.46-1.03-1.03v-41.92c0-.57.46-1.03,1.03-1.03h11.13c.57,0,1.03.46,1.03,1.03v6.8c1.64-5.5,6.88-8.32,12.08-8.67.6-.04,1.12.43,1.12,1.03Z"/>
+      <path class="lg2" d="M442.28,268.62v41.92c0,.57-.46,1.03-1.03,1.03h-11.13c-.57,0-1.03-.46-1.03-1.03v-3.1c-2.9,3.34-7.21,5.36-13.1,5.36-11.52,0-21.02-10.11-21.02-23.22s9.5-23.22,21.02-23.22c5.89,0,10.2,2.02,13.1,5.36v-3.1c0-.57.46-1.03,1.03-1.03h11.13c.57,0,1.03.46,1.03,1.03ZM429.09,289.57c0-6.6-4.4-10.73-10.47-10.73s-10.47,4.13-10.47,10.73,4.4,10.73,10.47,10.73,10.47-4.13,10.47-10.73Z"/>
+      <path class="lg2" d="M490.62,284.56v25.97c0,.57-.46,1.03-1.03,1.03h-11.13c-.57,0-1.03-.46-1.03-1.03v-24.04c0-5.45-3.43-8-7.65-8-4.84,0-8.18,2.81-8.18,9.06v22.98c0,.57-.46,1.03-1.03,1.03h-11.13c-.57,0-1.03-.46-1.03-1.03v-41.92c0-.57.46-1.03,1.03-1.03h11.13c.57,0,1.03.46,1.03,1.03v3.1c2.38-3.25,6.77-5.36,12.58-5.36,8.88,0,16.45,6.33,16.45,18.21Z"/>
+      <path class="lg2" d="M531.25,298.37c0,10.11-8.79,14.42-18.29,14.42-8.42,0-14.91-3.07-18.46-9.58-.26-.49-.07-1.1.41-1.37l9.56-5.44c.52-.3,1.18-.08,1.43.46,1.28,2.69,3.61,4.15,7.06,4.15,3.17,0,4.75-.97,4.75-2.73,0-4.84-21.64-2.29-21.64-17.5,0-9.59,8.09-14.42,17.24-14.42,6.76,0,12.81,2.85,16.56,8.48.33.5.14,1.17-.38,1.46l-9.42,5.08c-.47.25-1.05.1-1.35-.35-1.2-1.84-2.87-3.06-5.41-3.06-2.29,0-3.69.88-3.69,2.46,0,5.01,21.64,1.67,21.64,17.94Z"/>
+      <path class="lg2" d="M581.64,268.62v41.92c0,.57-.46,1.03-1.03,1.03h-11.13c-.57,0-1.03-.46-1.03-1.03v-3.1c-2.9,3.34-7.21,5.36-13.1,5.36-11.52,0-21.02-10.11-21.02-23.22s9.5-23.22,21.02-23.22c5.89,0,10.2,2.02,13.1,5.36v-3.1c0-.57.46-1.03,1.03-1.03h11.13c.57,0,1.03.46,1.03,1.03ZM568.45,289.57c0-6.6-4.4-10.73-10.47-10.73s-10.47,4.13-10.47,10.73,4.4,10.73,10.47,10.73,10.47-4.13,10.47-10.73Z"/>
+      <path class="lg2" d="M585.77,289.57c0-13.1,9.94-23.22,23.31-23.22,8.15,0,15.42,4.09,19.35,10.36.3.49.13,1.13-.37,1.42l-9.72,5.64c-.47.27-1.08.13-1.37-.33-1.63-2.57-4.56-4.08-8.06-4.08-5.72,0-9.94,4.13-9.94,10.2s4.22,10.2,9.94,10.2c3.49,0,6.48-1.5,8.07-4.06.29-.47.9-.62,1.37-.34l9.71,5.56c.5.28.68.93.38,1.42-3.92,6.35-11.11,10.45-19.35,10.45-13.37,0-23.31-10.11-23.31-23.22Z"/>
+      <path class="lg2" d="M660.27,268.42v10.61c0,.57-.46,1.03-1.03,1.03h-8.03v15.57c0,3.54,2.85,4.08,7.99,3.84.58-.03,1.07.44,1.07,1.03v9.94c0,.53-.41.98-.94,1.03-16.48,1.47-21.31-3.75-21.31-15.83v-15.57h-6.01c-.57,0-1.03-.46-1.03-1.03v-10.61c0-.57.46-1.03,1.03-1.03h27.23c.57,0,1.03.46,1.03,1.03Z"/>
+    </svg>
+    <span class="sub">Availability</span>
     <div class="grow"></div>
     <span class="who" id="who"></span>
     <button class="linklike" id="signOut" style="display:none">Sign out</button>
@@ -107,7 +137,7 @@
     </div>
 
     <div class="status" id="status"></div>
-    <div class="grid" id="grid"></div>
+    <div class="cal" id="cal"></div>
 
     <div class="panel">
       <div class="panel-head">
@@ -117,19 +147,19 @@
         <button class="btn primary" id="copyBtn">Copy for email</button>
       </div>
       <div id="preview"><span style="color:var(--muted)">Click free slots above — a hyperlinked snippet appears here. Each link opens a pre-filled Outlook invite addressed to you; the recipient just hits Send.</span></div>
-      <div class="hint">Paste into any email — links are preserved. Times shown in <b id="tzLabel"></b>. Grey blocks are your existing meetings (only you see them).</div>
+      <div class="hint">Paste into any email — links are preserved. Times shown in <b id="tzLabel"></b>. Tinted blocks are your existing meetings (only you see them).</div>
     </div>
   </div>
 </div>
 <div class="toast" id="toast">Copied</div>
 
 <script>
-// ====== CONFIG — set after Entra ID app registration ======
+// ====== CONFIG ======
 const CONFIG = {
   clientId: "d64e24c4-3c00-4b04-9ab0-e337d5fcc34b",
-  tenantId: "wetransact.io",   // WeTransact tenant — restricts sign-in to your org
+  tenantId: "wetransact.io",
 };
-// ==========================================================
+// ====================
 
 const pca = new msal.PublicClientApplication({
   auth: {
@@ -150,6 +180,7 @@ const TZ_LIST = [
   "Europe/Istanbul","Asia/Dubai","Asia/Karachi","Asia/Kolkata","Asia/Singapore","Asia/Hong_Kong",
   "Asia/Shanghai","Asia/Tokyo","Asia/Seoul","Australia/Sydney","Australia/Perth","Pacific/Auckland","UTC"
 ];
+const PPM = 1.1; // pixels per minute
 
 const S = {
   week: 0, dur: 30,
@@ -159,7 +190,6 @@ const S = {
   slots: {}, events: {}, selected: new Set(),
 };
 
-// timezone-aware formatting helpers
 function fmt(d, opts){ return new Intl.DateTimeFormat(undefined, Object.assign({timeZone:S.tz}, opts)).format(d); }
 function fmtTime(d){ return fmt(d, {hour:"numeric", minute:"2-digit"}); }
 function dayKey(d){ return new Intl.DateTimeFormat("en-CA", {timeZone:S.tz, year:"numeric", month:"2-digit", day:"2-digit"}).format(d); }
@@ -227,7 +257,7 @@ function seg(e, id, fn){
 document.getElementById("clearBtn").onclick = () => { S.selected.clear(); renderGrid(); renderPreview(); };
 document.getElementById("subj").oninput = renderPreview;
 
-// ---- dates (fetch windows use the calendar owner's local tz) ----
+// ---- dates ----
 function mondayOf(weekOffset){
   const now = new Date();
   const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -251,7 +281,6 @@ async function load(){
   if (!tk) return;
   const now = new Date();
 
-  // 1) existing events for the whole week (calendar sync view)
   const weekStart = new Date(mon); weekStart.setHours(0,0,0,0);
   const weekEnd = new Date(mon); weekEnd.setDate(weekEnd.getDate()+5); weekEnd.setHours(0,0,0,0);
   const eventsP = fetch("https://graph.microsoft.com/v1.0/me/calendarView?" + new URLSearchParams({
@@ -263,19 +292,17 @@ async function load(){
       (obj.value || []).forEach(ev => {
         if (ev.isAllDay || ev.showAs === "free") return;
         const st = new Date(ev.start.dateTime + "Z"), en = new Date(ev.end.dateTime + "Z");
-        const k = dayKey(st);
+        const k = dayKeyLocal(st);
         (S.events[k] = S.events[k] || []).push({ subject: ev.subject || "(busy)", start: st, end: en });
       });
     }).catch(e => console.error("calendarView", e));
 
-  // 2) free slots per day
   const slotsP = Promise.all(days.map(async d => {
     let start = new Date(d); start.setHours(S.hStart,0,0,0);
     const end = new Date(d); end.setHours(S.hEnd,0,0,0);
-    const k0 = dayKey(new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12));
-    if (end <= now) { S.slots[k0] = S.slots[k0] || []; return; }
+    if (end <= now) return;
     let s2 = start < now ? new Date(Math.ceil(now.getTime() / (30*60000)) * 30*60000) : start;
-    if (s2 >= end) { S.slots[k0] = S.slots[k0] || []; return; }
+    if (s2 >= end) return;
     try {
       const r = await fetch("https://graph.microsoft.com/v1.0/me/findMeetingTimes", {
         method: "POST",
@@ -297,13 +324,10 @@ async function load(){
         .forEach(s => {
           const st = new Date(s.meetingTimeSlot.start.dateTime + "Z");
           const en = new Date(s.meetingTimeSlot.end.dateTime + "Z");
-          const k = dayKey(st);
+          const k = dayKeyLocal(st);
           (S.slots[k] = S.slots[k] || []).push({ startISO: st.toISOString(), endISO: en.toISOString(), start: st, end: en });
         });
-    } catch(err){
-      console.error(err);
-      S.slots[k0] = S.slots[k0] || []; S.slots[k0].error = true;
-    }
+    } catch(err){ console.error(err); }
   }));
 
   await Promise.all([eventsP, slotsP]);
@@ -319,51 +343,88 @@ async function load(){
   renderPreview();
 }
 function status(html){ document.getElementById("status").innerHTML = html; }
+// group by the owner's local day (matches the fetch windows / columns)
+function dayKeyLocal(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
 
-// ---- grid (merges free slots + booked meetings, ordered by time) ----
+// ---- Vimcal-style week grid ----
 let curDays = [];
 function renderGrid(days){
   if (days) curDays = days;
-  const grid = document.getElementById("grid");
-  grid.style.gridTemplateColumns = "repeat(" + curDays.length + ",1fr)";
-  grid.innerHTML = "";
+  const cal = document.getElementById("cal");
+  cal.innerHTML = "";
+  const hourpx = 60 * PPM;
+  const H = (S.hEnd - S.hStart) * hourpx;
+
+  const head = document.createElement("div"); head.className = "cal-head";
+  head.style.gridTemplateColumns = "56px repeat(" + curDays.length + ",1fr)";
+  head.innerHTML = '<div class="gut"></div>';
   curDays.forEach(d => {
     const noon = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12);
-    const k = dayKey(noon);
-    const col = document.createElement("div"); col.className = "day";
-    const h = document.createElement("h3");
-    h.innerHTML = fmt(noon, {weekday:"short"}) + '<span class="dnum">' + fmt(noon, {month:"short", day:"numeric"}) + "</span>";
-    col.appendChild(h);
-
-    const slots = S.slots[k], events = S.events[k] || [];
-    const items = [];
-    (slots || []).forEach(s => items.push({ t: s.start, kind: "slot", s }));
-    events.forEach(ev => items.push({ t: ev.start, kind: "busy", ev }));
-    items.sort((a,b) => a.t - b.t);
-
-    if (!slots && !events.length) col.insertAdjacentHTML("beforeend",'<div class="noslots">…</div>');
-    else if (!items.length) col.insertAdjacentHTML("beforeend",'<div class="noslots">' + (slots && slots.error ? "couldn’t load" : "no free slots") + "</div>");
-    else items.forEach(it => {
-      if (it.kind === "busy"){
-        const b = document.createElement("div"); b.className = "busy";
-        b.title = it.ev.subject;
-        b.innerHTML = '<span class="bt">' + fmtTime(it.ev.start) + "–" + fmtTime(it.ev.end) + '</span><span class="bn"></span>';
-        b.querySelector(".bn").textContent = it.ev.subject;
-        col.appendChild(b);
-      } else {
-        const s = it.s, id = s.startISO + "|" + s.endISO;
-        const b = document.createElement("button");
-        b.className = "slot" + (S.selected.has(id) ? " sel" : "");
-        b.textContent = fmtTime(s.start);
-        b.onclick = () => { S.selected.has(id) ? S.selected.delete(id) : S.selected.add(id); b.classList.toggle("sel"); renderPreview(); };
-        col.appendChild(b);
-      }
-    });
-    grid.appendChild(col);
+    const dh = document.createElement("div"); dh.className = "dh";
+    dh.innerHTML = fmt(noon, {weekday:"short"}) + '<span class="dnum">' + fmt(noon, {month:"short", day:"numeric"}) + "</span>";
+    head.appendChild(dh);
   });
+  cal.appendChild(head);
+
+  const body = document.createElement("div"); body.className = "cal-body";
+  body.style.gridTemplateColumns = "56px repeat(" + curDays.length + ",1fr)";
+  body.style.height = H + "px";
+
+  // hour gutter (labels follow the selected timezone)
+  const gut = document.createElement("div"); gut.className = "gutter";
+  const mon0 = curDays[0];
+  for (let i = 0; i <= S.hEnd - S.hStart; i++){
+    const t = new Date(mon0.getFullYear(), mon0.getMonth(), mon0.getDate(), S.hStart + i);
+    const hl = document.createElement("div"); hl.className = "hl";
+    hl.style.top = (i * hourpx) + "px";
+    hl.textContent = fmtTime(t);
+    if (i === 0) hl.style.transform = "translateY(0)";
+    if (i === S.hEnd - S.hStart) hl.style.transform = "translateY(-100%)";
+    gut.appendChild(hl);
+  }
+  body.appendChild(gut);
+
+  curDays.forEach(d => {
+    const k = dayKeyLocal(new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12));
+    const winStart = new Date(d); winStart.setHours(S.hStart,0,0,0);
+    const col = document.createElement("div"); col.className = "daycol";
+    col.style.setProperty("--hourpx", hourpx + "px");
+    col.insertAdjacentHTML("beforeend", '<div class="gridlines"></div>');
+
+    const posTop = t => Math.max(0, (t - winStart) / 60000 * PPM);
+    const posBot = t => Math.min(H, (t - winStart) / 60000 * PPM);
+
+    (S.events[k] || []).forEach(ev => {
+      const top = posTop(ev.start), bot = posBot(ev.end);
+      if (bot - top < 6) return;
+      const b = document.createElement("div"); b.className = "evt busy";
+      b.style.top = top + "px"; b.style.height = (bot - top - 2) + "px";
+      b.title = ev.subject + " (" + fmtTime(ev.start) + "–" + fmtTime(ev.end) + ")";
+      b.innerHTML = '<span class="bn"></span><span class="bt">' + fmtTime(ev.start) + "–" + fmtTime(ev.end) + "</span>";
+      b.querySelector(".bn").textContent = ev.subject;
+      col.appendChild(b);
+    });
+
+    (S.slots[k] || []).forEach(s => {
+      const id = s.startISO + "|" + s.endISO;
+      const top = posTop(s.start), bot = posBot(s.end);
+      if (bot - top < 6) return;
+      const b = document.createElement("button");
+      b.className = "evt slot" + (S.selected.has(id) ? " sel" : "");
+      b.style.top = top + "px"; b.style.height = (bot - top - 2) + "px";
+      if (bot - top < 24) b.style.fontSize = "10px";
+      b.textContent = fmtTime(s.start);
+      b.title = "Offer " + fmtTime(s.start) + " – " + fmtTime(s.end);
+      b.onclick = () => { S.selected.has(id) ? S.selected.delete(id) : S.selected.add(id); b.classList.toggle("sel"); renderPreview(); };
+      col.appendChild(b);
+    });
+
+    body.appendChild(col);
+  });
+  cal.appendChild(body);
 }
 
-// ---- booking link (Outlook deeplink, addressed to signed-in user) ----
+// ---- booking link ----
 function bookingLink(startISO, endISO){
   const p = new URLSearchParams({
     path: "/calendar/action/compose", rru: "addevent",
