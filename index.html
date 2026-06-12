@@ -13,11 +13,11 @@
     --blue:#3b82f6; --blue-dark:#2563eb; --blue-light:#eff6ff;
     --ink:#1f2937; --muted:#9ca3af; --muted2:#6b7280;
     --line:#ececec; --line2:#f4f4f5; --bg:#ffffff; --card:#ffffff;
-    --wt-purple:#7C6FF7; --wt-ink:#2C1C6C;
+    --side:#6366f1;
   }
   * { box-sizing:border-box; margin:0; padding:0; }
   body { font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--bg); color:var(--ink); font-size:14px; }
-  .app { max-width:1280px; margin:0 auto; padding:0 8px; }
+  .app { max-width:1440px; margin:0 auto; padding:0 8px; }
 
   /* ---- top bar ---- */
   .top { display:flex; align-items:center; gap:14px; padding:14px 10px 10px; }
@@ -34,15 +34,14 @@
   .who { font-size:13px; color:var(--muted2); }
   .linklike { background:none; border:none; color:var(--blue-dark); cursor:pointer; font-size:13px; text-decoration:underline; font-family:inherit; }
 
-  /* ---- tz search popover ---- */
+  /* ---- tz popover ---- */
   .tzpop { position:absolute; z-index:50; background:#fff; border:1px solid var(--line); border-radius:12px; box-shadow:0 12px 32px rgba(0,0,0,.12); width:300px; padding:8px; display:none; }
   .tzpop input { width:100%; border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-size:14px; font-family:inherit; outline:none; }
   .tzpop input:focus { border-color:var(--blue); }
   .tzlist { max-height:260px; overflow:auto; margin-top:6px; }
   .tzitem { display:flex; gap:10px; align-items:center; padding:7px 8px; border-radius:8px; cursor:pointer; font-size:13.5px; }
-  .tzitem:hover, .tzitem.hover { background:var(--blue-light); }
+  .tzitem:hover { background:var(--blue-light); }
   .tzitem .ab { font-weight:600; width:52px; color:var(--blue-dark); }
-  .tzitem .nm { color:var(--ink); }
   .tzitem .ct { color:var(--muted); margin-left:auto; font-size:12px; }
 
   /* ---- signin ---- */
@@ -55,11 +54,27 @@
 
   .statusline { font-size:12.5px; color:var(--muted); padding:0 10px 8px; }
 
-  /* ---- calendar ---- */
+  /* ---- layout: sidebar | calendar | share panel ---- */
+  .layout { display:flex; gap:14px; align-items:flex-start; }
+  .sidebar { width:232px; flex-shrink:0; position:sticky; top:10px; padding:2px 2px 20px; }
+  .sb-search { display:flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:10px; padding:8px 10px; }
+  .sb-search input { border:none; outline:none; font-size:13.5px; font-family:inherit; width:100%; color:var(--ink); background:transparent; }
+  .sb-h { color:var(--side); font-weight:700; font-size:14px; margin:18px 4px 8px; }
+  .sb-item { display:flex; align-items:center; gap:10px; padding:7px 6px; border-radius:8px; font-size:14px; color:var(--ink); }
+  .sb-item label { display:flex; align-items:center; gap:10px; cursor:pointer; width:100%; }
+  .sb-item input[type=checkbox]{ width:16px; height:16px; accent-color:var(--blue); }
+  .sb-item .nm { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .sb-note { font-size:12px; color:var(--muted); padding:2px 6px; }
+  .chip { display:inline-flex; align-items:center; gap:6px; border-radius:999px; padding:4px 10px; font-size:12.5px; font-weight:600; color:#fff; margin:3px 4px 0 0; }
+  .chip .x { cursor:pointer; opacity:.8; font-weight:700; }
+  .sb-people-in { width:100%; border:1px solid var(--line); border-radius:10px; padding:8px 10px; font-size:13.5px; font-family:inherit; outline:none; }
+  .sb-people-in:focus { border-color:var(--blue); }
+
+  .calwrap { flex:1; min-width:0; }
   .cal { border-top:1px solid var(--line); }
-  .cal-head { display:grid; grid-template-columns:64px repeat(7,1fr); }
+  .cal-head { display:grid; grid-template-columns:58px repeat(7,1fr); }
   .cal-head .gut { display:flex; align-items:center; justify-content:center; padding:10px 0; }
-  .tzchip { border:1px solid var(--line); border-radius:10px; font-size:12px; font-weight:600; color:var(--muted2); padding:6px 10px; background:#fff; cursor:pointer; }
+  .tzchip { border:1px solid var(--line); border-radius:10px; font-size:12px; font-weight:600; color:var(--muted2); padding:6px 8px; background:#fff; cursor:pointer; }
   .tzchip:hover { border-color:var(--blue); color:var(--blue-dark); }
   .dh { text-align:center; padding:10px 4px 12px; }
   .dh .wd { font-size:12px; font-weight:600; color:var(--muted2); letter-spacing:.06em; }
@@ -68,9 +83,9 @@
   .dh.today .dn { background:var(--blue); color:#fff; font-weight:600; }
 
   .scroller { height:calc(100vh - 215px); min-height:430px; overflow-y:auto; border-top:1px solid var(--line); }
-  .cal-body { display:grid; grid-template-columns:64px repeat(7,1fr); position:relative; }
+  .cal-body { display:grid; grid-template-columns:58px repeat(7,1fr); position:relative; }
   .gutter { position:relative; }
-  .gutter .hl { position:absolute; right:10px; transform:translateY(-50%); font-size:11px; color:var(--muted); background:#fff; padding:0 2px; }
+  .gutter .hl { position:absolute; right:8px; transform:translateY(-50%); font-size:11px; color:var(--muted); background:#fff; padding:0 2px; }
   .daycol { position:relative; border-left:1px solid var(--line2); cursor:crosshair; }
   .daycol .lines { position:absolute; inset:0; pointer-events:none;
     background:repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--hourpx) - 1px), var(--line) calc(var(--hourpx) - 1px), var(--line) var(--hourpx)); }
@@ -81,24 +96,24 @@
   .busy { background:#f1f5f9; border-left:3px solid #94a3b8; color:#475569; font-size:11px; padding:3px 6px; line-height:1.3; pointer-events:none; z-index:2; }
   .busy .bn { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; font-weight:600; }
   .busy .bt { color:#94a3b8; font-size:10.5px; }
+  .busy.dim { opacity:.18; }
+  .ovl { pointer-events:none; z-index:3; opacity:.5; border-radius:6px; font-size:10px; color:#fff; padding:2px 5px; font-weight:600; overflow:hidden; white-space:nowrap; }
   .sel { background:rgba(59,130,246,.85); color:#fff; font-size:11px; font-weight:600; padding:3px 6px; line-height:1.3; z-index:4; cursor:pointer; box-shadow:0 1px 4px rgba(37,99,235,.35); }
   .sel:hover { background:rgba(37,99,235,.92); }
   .sel .x { position:absolute; top:2px; right:5px; font-weight:700; opacity:.75; }
   .sel.tmp { background:rgba(59,130,246,.45); box-shadow:none; }
 
-  /* ---- layout: calendar left, share panel right ---- */
-  .main { display:flex; gap:14px; align-items:flex-start; }
-  .main .cal { flex:1; min-width:0; }
-  .panel { width:300px; flex-shrink:0; position:sticky; top:10px; border:1px solid var(--line); border-radius:14px; padding:14px; margin:0 0 20px; box-shadow:0 2px 10px rgba(0,0,0,.04); }
+  .panel { width:290px; flex-shrink:0; position:sticky; top:10px; border:1px solid var(--line); border-radius:14px; padding:14px; margin:0 0 20px; box-shadow:0 2px 10px rgba(0,0,0,.04); }
   .panel h2 { font-size:14px; font-weight:600; }
   .panel input[type="text"] { border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-size:13px; font-family:inherit; }
   .panel-btns { display:flex; gap:8px; margin-top:12px; }
   .panel-btns .primary { flex:1; }
-  @media (max-width: 900px){ .main { flex-direction:column; } .panel { width:100%; position:static; } }
-  label.small { font-size:12px; color:var(--muted2); }
-  #preview { border:1px dashed var(--line); border-radius:10px; padding:12px; font-size:14px; line-height:1.7; min-height:56px; }
+  #preview { border:1px dashed var(--line); border-radius:10px; padding:12px; font-size:13.5px; line-height:1.7; min-height:56px; }
   #preview a { color:var(--blue-dark); font-weight:600; text-decoration:underline; }
   .hint { font-size:12px; color:var(--muted); margin-top:8px; }
+  @media (max-width: 1150px){ .sidebar { display:none; } }
+  @media (max-width: 900px){ .layout { flex-direction:column; } .panel { width:100%; position:static; } .calwrap { width:100%; } }
+
   .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:10px 18px; border-radius:999px; font-size:13px; opacity:0; transition:opacity .2s; pointer-events:none; z-index:99; }
   .toast.show { opacity:1; }
   .spin { display:inline-block; width:12px; height:12px; border:2px solid var(--line); border-top-color:var(--blue); border-radius:50%; animation:sp .8s linear infinite; vertical-align:-2px; margin-right:6px; }
@@ -146,19 +161,36 @@
     </div>
     <div class="statusline" id="status"></div>
 
-    <div class="main">
-      <div class="cal">
-        <div class="cal-head" id="calHead"></div>
-        <div class="scroller" id="scroller">
-          <div class="cal-body" id="calBody"></div>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sb-search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input type="text" id="sbSearch" placeholder="Search meetings">
+        </div>
+
+        <div class="sb-h" id="meetWithH">Meet With</div>
+        <input type="text" class="sb-people-in" id="meetIn" placeholder="colleague@wetransact.io ⏎">
+        <div id="meetChips"></div>
+        <div class="sb-note" id="meetNote">Overlay a teammate’s busy times to find mutual slots.</div>
+
+        <div class="sb-h" id="calsH">Calendars</div>
+        <div id="calList"><div class="sb-note">Loading…</div></div>
+      </aside>
+
+      <div class="calwrap">
+        <div class="cal">
+          <div class="cal-head" id="calHead"></div>
+          <div class="scroller" id="scroller">
+            <div class="cal-body" id="calBody"></div>
+          </div>
         </div>
       </div>
 
       <div class="panel">
         <h2>Share availability</h2>
-        <label class="small" style="display:block;margin:10px 0 4px">Invite title</label>
+        <label class="hint" style="display:block;margin:10px 0 4px">Invite title</label>
         <input type="text" id="subj" style="width:100%">
-        <div id="preview" style="margin-top:12px"><span style="color:var(--muted2)">Click or drag on the calendar to paint availability slots — a hyperlinked snippet appears here. Each link opens a pre-filled Outlook invite addressed to you; the recipient just hits Send.</span></div>
+        <div id="preview" style="margin-top:12px"><span style="color:var(--muted2)">Click or drag on the calendar to paint availability slots — a hyperlinked snippet appears here.</span></div>
         <div class="hint">Click a painted slot to remove it. Standard slots are 30 min; drag for longer (snaps to 15 min). Times shown in <b id="tzLabel"></b>.</div>
         <div class="panel-btns">
           <button class="btn" id="clearBtn">Clear</button>
@@ -180,6 +212,7 @@ const CONFIG = { clientId: "d64e24c4-3c00-4b04-9ab0-e337d5fcc34b", tenantId: "we
 // ====================
 
 // === DATA LAYER (web) ===
+const CAPS = { calendars: true, meetWith: true };
 const pca = new msal.PublicClientApplication({
   auth: {
     clientId: CONFIG.clientId,
@@ -208,30 +241,64 @@ async function token(){
   try { return (await pca.acquireTokenSilent({ scopes: SCOPES, account })).accessToken; }
   catch(e){ await pca.acquireTokenRedirect({ scopes: SCOPES }); }
 }
-async function fetchEvents(weekStart, weekEnd){
+async function gget(url){
   const tk = await token();
-  if (!tk) return [];
-  const r = await fetch("https://graph.microsoft.com/v1.0/me/calendarView?" + new URLSearchParams({
+  const r = await fetch("https://graph.microsoft.com/v1.0" + url, { headers: { Authorization: "Bearer " + tk, Prefer: 'outlook.timezone="UTC"' } });
+  if (!r.ok) throw new Error("Graph " + r.status);
+  return r.json();
+}
+async function fetchCalendars(){
+  const obj = await gget("/me/calendars?$select=id,name,hexColor,isDefaultCalendar&$top=50");
+  return (obj.value || []).map(c => ({ id: c.id, name: c.name, isDefault: !!c.isDefaultCalendar }));
+}
+async function fetchEvents(weekStart, weekEnd, calIds){
+  const ids = (calIds && calIds.length) ? calIds : [null];
+  const all = [];
+  await Promise.all(ids.map(async id => {
+    const base = id ? "/me/calendars/" + encodeURIComponent(id) + "/calendarView" : "/me/calendarView";
+    const obj = await gget(base + "?" + new URLSearchParams({
       startDateTime: weekStart.toISOString(), endDateTime: weekEnd.toISOString(),
       $select: "subject,start,end,showAs,isAllDay", $orderby: "start/dateTime", $top: "150",
-    }), { headers: { Authorization: "Bearer " + tk, Prefer: 'outlook.timezone="UTC"' } });
+    }));
+    (obj.value || []).filter(ev => !ev.isAllDay && ev.showAs !== "free")
+      .forEach(ev => all.push({ subject: ev.subject || "(busy)", start: new Date(ev.start.dateTime + "Z"), end: new Date(ev.end.dateTime + "Z") }));
+  }));
+  return all;
+}
+async function fetchSchedules(emails, weekStart, weekEnd){
+  if (!emails.length) return {};
+  const tk = await token();
+  const r = await fetch("https://graph.microsoft.com/v1.0/me/calendar/getSchedule", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + tk, "Content-Type": "application/json", Prefer: 'outlook.timezone="UTC"' },
+    body: JSON.stringify({
+      schedules: emails,
+      startTime: { dateTime: weekStart.toISOString().slice(0,19), timeZone: "UTC" },
+      endTime:   { dateTime: weekEnd.toISOString().slice(0,19),   timeZone: "UTC" },
+      availabilityViewInterval: 30,
+    }),
+  });
   if (!r.ok) throw new Error("Graph " + r.status);
   const obj = await r.json();
-  return (obj.value || [])
-    .filter(ev => !ev.isAllDay && ev.showAs !== "free")
-    .map(ev => ({ subject: ev.subject || "(busy)", start: new Date(ev.start.dateTime + "Z"), end: new Date(ev.end.dateTime + "Z") }));
+  const out = {};
+  (obj.value || []).forEach(s => {
+    out[s.scheduleId] = (s.scheduleItems || [])
+      .filter(it => it.status !== "free")
+      .map(it => ({ start: new Date(it.start.dateTime + "Z"), end: new Date(it.end.dateTime + "Z") }));
+  });
+  return out;
 }
 function onSignedIn(){
   document.getElementById("signinView").style.display = "none";
   document.getElementById("appView").style.display = "";
   document.getElementById("who").textContent = ME.name + " · " + ME.email;
   document.getElementById("subj").value = "Meeting with " + ME.name;
-  load();
+  boot();
 }
 init();
 // === END DATA LAYER ===
 
-// ---- timezones (main abbreviations, searchable) ----
+// ---- timezones ----
 const TZS = [
   { ab:"PST", name:"America/Los_Angeles", city:"Los Angeles · Pacific", alias:"pst pdt pacific la california san francisco seattle" },
   { ab:"MST", name:"America/Denver", city:"Denver · Mountain", alias:"mst mdt mountain" },
@@ -257,14 +324,16 @@ const TZS = [
   { ab:"UTC", name:"UTC", city:"Coordinated Universal Time", alias:"utc universal" },
 ];
 const LOCAL_TZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-const PPM = 0.8;          // px per minute
-const SNAP = 15;          // minutes
-const DEFAULT_LEN = 30;   // standard call
+const PPM = 0.8, SNAP = 15, DEFAULT_LEN = 30;
+const PCOLORS = ["#f59e0b","#10b981","#ec4899","#8b5cf6"];
 
 const S = {
   week: 0,
   tz: localStorage.getItem("tz2") || LOCAL_TZ,
-  events: [], sel: [],    // sel: [{start:Date,end:Date}]
+  events: [], sel: [], q: "",
+  cals: [],          // {id,name,isDefault,checked}
+  people: [],        // {email,color}
+  schedules: {},     // email -> [{start,end}]
 };
 
 function tzAbbr(zone){
@@ -275,7 +344,7 @@ function tzAbbr(zone){
 function liveAbbr(zone){
   try {
     const p = new Intl.DateTimeFormat("en-GB", {timeZone:zone, timeZoneName:"short"}).formatToParts(new Date()).find(x=>x.type==="timeZoneName").value;
-    return /^[A-Z]{2,5}$/.test(p) ? p : null;  // only real abbreviations (CET, BST…), not GMT+5
+    return /^[A-Z]{2,5}$/.test(p) ? p : null;
   } catch(e){ return null; }
 }
 function fmt(d, opts){ return new Intl.DateTimeFormat("en-US", Object.assign({timeZone:S.tz}, opts)).format(d); }
@@ -330,27 +399,94 @@ function weekDays(){
   for (let i = 0; i < 7; i++){ const d = new Date(sun); d.setDate(d.getDate()+i); days.push(d); }
   return days;
 }
+function weekRange(){
+  const days = weekDays();
+  const ws = new Date(days[0]); ws.setHours(0,0,0,0);
+  const we = new Date(days[6]); we.setDate(we.getDate()+1); we.setHours(0,0,0,0);
+  return [ws, we];
+}
 document.getElementById("todayBtn").onclick = () => { S.week = 0; load(); };
 document.getElementById("prevW").onclick = () => { S.week--; load(); };
 document.getElementById("nextW").onclick = () => { S.week++; load(); };
 document.getElementById("clearBtn").onclick = () => { S.sel = []; renderAll(); };
 document.getElementById("subj").oninput = renderPreview;
 
-// ---- load events ----
+// ---- sidebar: search ----
+document.getElementById("sbSearch").oninput = e => { S.q = e.target.value.trim().toLowerCase(); renderBody(); };
+
+// ---- sidebar: meet with ----
+const meetIn = document.getElementById("meetIn");
+if (!CAPS.meetWith){ meetIn.style.display = "none"; document.getElementById("meetWithH").style.display = "none"; document.getElementById("meetNote").style.display = "none"; }
+meetIn.addEventListener("keydown", async e => {
+  if (e.key !== "Enter") return;
+  let v = meetIn.value.trim().toLowerCase();
+  if (!v) return;
+  if (!v.includes("@")) v = v.replace(/\s+/g,".") + "@wetransact.io";
+  if (S.people.find(p => p.email === v)) { meetIn.value = ""; return; }
+  if (S.people.length >= 4) { toast("Up to 4 people"); return; }
+  S.people.push({ email: v, color: PCOLORS[S.people.length % PCOLORS.length] });
+  meetIn.value = "";
+  renderChips();
+  await loadSchedules();
+});
+function renderChips(){
+  const box = document.getElementById("meetChips");
+  box.innerHTML = "";
+  S.people.forEach((p, i) => {
+    const c = document.createElement("span"); c.className = "chip"; c.style.background = p.color;
+    c.innerHTML = '<span class="nm"></span><span class="x">×</span>';
+    c.querySelector(".nm").textContent = p.email.split("@")[0];
+    c.title = p.email;
+    c.querySelector(".x").onclick = () => { S.people.splice(i,1); delete S.schedules[p.email]; renderChips(); renderBody(); };
+    box.appendChild(c);
+  });
+}
+async function loadSchedules(){
+  if (!CAPS.meetWith || !S.people.length) { S.schedules = {}; renderBody(); return; }
+  const [ws, we] = weekRange();
+  try {
+    S.schedules = await fetchSchedules(S.people.map(p => p.email), ws, we);
+    const missing = S.people.filter(p => !(S.schedules[p.email] || []).length);
+    status(missing.length ? "No busy data for " + missing.map(p=>p.email).join(", ") + " (check the address)." : "");
+  } catch(e){ console.error(e); toast("Couldn’t load their calendar"); }
+  renderBody();
+}
+
+// ---- sidebar: calendars ----
+async function loadCalendars(){
+  const box = document.getElementById("calList");
+  if (!CAPS.calendars){ box.innerHTML = '<div class="sb-note">Your default Outlook calendar.</div>'; document.getElementById("calsH").textContent = "Calendar"; return; }
+  try {
+    const cals = await fetchCalendars();
+    S.cals = cals.map(c => ({ ...c, checked: c.isDefault }));
+    box.innerHTML = "";
+    S.cals.forEach(c => {
+      const d = document.createElement("div"); d.className = "sb-item";
+      const lab = document.createElement("label");
+      const cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = c.checked;
+      cb.onchange = () => { c.checked = cb.checked; load(); };
+      const nm = document.createElement("span"); nm.className = "nm"; nm.textContent = c.name; nm.title = c.name;
+      lab.appendChild(cb); lab.appendChild(nm); d.appendChild(lab); box.appendChild(d);
+    });
+  } catch(e){ console.error(e); box.innerHTML = '<div class="sb-note">Couldn’t load calendars.</div>'; }
+}
+
+// ---- load ----
 let loadSeq = 0;
+async function boot(){ await loadCalendars(); load(); }
 async function load(){
   const seq = ++loadSeq;
-  const days = weekDays();
-  const weekStart = new Date(days[0]); weekStart.setHours(0,0,0,0);
-  const weekEnd = new Date(days[6]); weekEnd.setDate(weekEnd.getDate()+1); weekEnd.setHours(0,0,0,0);
+  const [ws, we] = weekRange();
   status('<span class="spin"></span>Syncing your Outlook calendar…');
   renderAll();
   try {
-    const evs = await fetchEvents(weekStart, weekEnd);
+    const ids = S.cals.filter(c => c.checked).map(c => c.id);
+    const evs = await fetchEvents(ws, we, ids);
     if (seq !== loadSeq) return;
     S.events = evs;
-    status(evs.length + " meetings on your calendar this week · click or drag on the grid to paint availability.");
+    status(evs.length + " meetings this week · click or drag on the grid to paint availability.");
   } catch(e){ console.error(e); status('<span class="err">Couldn’t load calendar events.</span>'); }
+  if (S.people.length) await loadSchedules();
   renderAll();
 }
 function status(html){ document.getElementById("status").innerHTML = html; }
@@ -403,28 +539,43 @@ function renderBody(){
   const now = new Date();
   days.forEach(d => {
     const dayStart = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+    const dayEnd = new Date(dayStart.getTime() + 86400000);
     const col = document.createElement("div"); col.className = "daycol";
     col.style.setProperty("--hourpx", hourpx + "px");
-    col.dataset.day = dayStart.getTime();
     col.insertAdjacentHTML("beforeend", '<div class="lines"></div>');
-
     const top = t => (t - dayStart) / 60000 * PPM;
 
-    // busy events
+    // my busy events (dimmed when search active and not matching)
     S.events.forEach(ev => {
+      if (ev.end <= dayStart || ev.start >= dayEnd) return;
       const a = Math.max(top(ev.start), 0), b = Math.min(top(ev.end), H);
-      if (b <= 0 || a >= H || b - a < 4) return;
-      if (ev.end <= dayStart || ev.start >= new Date(dayStart.getTime() + 86400000)) return;
-      const el = document.createElement("div"); el.className = "evt busy";
+      if (b - a < 4) return;
+      const el = document.createElement("div");
+      const match = !S.q || (ev.subject || "").toLowerCase().includes(S.q);
+      el.className = "evt busy" + (match ? "" : " dim");
       el.style.top = a + "px"; el.style.height = Math.max(b - a - 1, 10) + "px";
       el.innerHTML = '<span class="bn"></span><span class="bt">' + fmtTime(ev.start) + "–" + fmtTime(ev.end) + "</span>";
       el.querySelector(".bn").textContent = ev.subject;
       col.appendChild(el);
     });
 
+    // colleagues' busy overlays
+    S.people.forEach(p => {
+      (S.schedules[p.email] || []).forEach(it => {
+        if (it.end <= dayStart || it.start >= dayEnd) return;
+        const a = Math.max(top(it.start), 0), b = Math.min(top(it.end), H);
+        if (b - a < 4) return;
+        const el = document.createElement("div"); el.className = "evt ovl";
+        el.style.top = a + "px"; el.style.height = Math.max(b - a - 1, 8) + "px";
+        el.style.background = p.color;
+        el.textContent = p.email.split("@")[0];
+        col.appendChild(el);
+      });
+    });
+
     // painted selections
     S.sel.forEach((s, idx) => {
-      if (s.end <= dayStart || s.start >= new Date(dayStart.getTime() + 86400000)) return;
+      if (s.end <= dayStart || s.start >= dayEnd) return;
       const a = Math.max(top(s.start), 0), b = Math.min(top(s.end), H);
       const el = document.createElement("div"); el.className = "evt sel";
       el.style.top = a + "px"; el.style.height = Math.max(b - a - 1, 12) + "px";
@@ -436,7 +587,6 @@ function renderBody(){
       col.appendChild(el);
     });
 
-    // current time line
     if (keyOf(d) === keyOf(now)){
       const nl = document.createElement("div"); nl.className = "nowline";
       nl.style.top = top(now) + "px";
@@ -447,13 +597,12 @@ function renderBody(){
     body.appendChild(col);
   });
 
-  // initial scroll to ~8 AM (only on first render)
   const sc = document.getElementById("scroller");
   if (!sc.dataset.scrolled){ sc.scrollTop = 8 * hourpx - 10; sc.dataset.scrolled = "1"; }
 }
 
 // ---- paint interaction ----
-let paint = null; // {col, dayStart, startMin, endMin, el}
+let paint = null;
 function snap(min){ return Math.round(min / SNAP) * SNAP; }
 function attachPaint(col, dayStart){
   col.onpointerdown = e => {
@@ -471,16 +620,15 @@ function attachPaint(col, dayStart){
     const rect = col.getBoundingClientRect();
     const cur = Math.max(0, Math.min(1440, snap((e.clientY - rect.top) / PPM)));
     paint.moved = true;
-    if (cur >= paint.anchor + SNAP) { paint.startMin = paint.anchor; paint.endMin = cur; }          // drag down
-    else if (cur <= paint.anchor - SNAP) { paint.startMin = cur; paint.endMin = paint.anchor; }     // drag up
-    else { paint.startMin = paint.anchor; paint.endMin = paint.anchor + DEFAULT_LEN; }              // tiny move = 30 min
+    if (cur >= paint.anchor + SNAP) { paint.startMin = paint.anchor; paint.endMin = cur; }
+    else if (cur <= paint.anchor - SNAP) { paint.startMin = cur; paint.endMin = paint.anchor; }
+    else { paint.startMin = paint.anchor; paint.endMin = paint.anchor + DEFAULT_LEN; }
     drawPaint();
   };
   col.onpointerup = () => {
     if (!paint || paint.col !== col) return;
     let s = paint.startMin, en = paint.endMin;
-    if (en - s < SNAP) en = s + DEFAULT_LEN;
-    if (!paint.moved) en = s + DEFAULT_LEN; // simple click = standard 30-min call
+    if (!paint.moved || en - s < SNAP) en = s + DEFAULT_LEN;
     const start = new Date(paint.dayStart.getTime() + s * 60000);
     const end   = new Date(paint.dayStart.getTime() + en * 60000);
     paint.el.remove(); paint = null;
