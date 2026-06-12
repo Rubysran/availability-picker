@@ -131,7 +131,7 @@ const CONFIG = {
 };
 // ==========================================================
 
-const msal = new msalBrowser.PublicClientApplication({
+const pca = new msal.PublicClientApplication({
   auth: {
     clientId: CONFIG.clientId,
     authority: "https://login.microsoftonline.com/" + CONFIG.tenantId,
@@ -171,18 +171,18 @@ function updateTzLabel(){ document.getElementById("tzLabel").textContent = tzLon
 
 // ---- auth ----
 async function init(){
-  await msal.initialize();
+  await pca.initialize();
   try {
-    const resp = await msal.handleRedirectPromise();
-    if (resp && resp.account) msal.setActiveAccount(resp.account);
+    const resp = await pca.handleRedirectPromise();
+    if (resp && resp.account) pca.setActiveAccount(resp.account);
   } catch(e){ showSigninErr(e); }
-  const accts = msal.getAllAccounts();
-  if (accts.length) { account = accts[0]; msal.setActiveAccount(account); onSignedIn(); }
+  const accts = pca.getAllAccounts();
+  if (accts.length) { account = accts[0]; pca.setActiveAccount(account); onSignedIn(); }
 }
 document.getElementById("signInBtn").onclick = () =>
-  msal.loginRedirect({ scopes: SCOPES }).catch(showSigninErr);
+  pca.loginRedirect({ scopes: SCOPES }).catch(showSigninErr);
 document.getElementById("signOut").onclick = () =>
-  msal.logoutRedirect({ account });
+  pca.logoutRedirect({ account });
 function showSigninErr(e){
   document.getElementById("signinErr").innerHTML = '<span class="err">' + (e.errorMessage || e.message || e) + "</span>";
 }
@@ -195,8 +195,8 @@ function onSignedIn(){
   load();
 }
 async function token(){
-  try { return (await msal.acquireTokenSilent({ scopes: SCOPES, account })).accessToken; }
-  catch(e){ await msal.acquireTokenRedirect({ scopes: SCOPES }); }
+  try { return (await pca.acquireTokenSilent({ scopes: SCOPES, account })).accessToken; }
+  catch(e){ await pca.acquireTokenRedirect({ scopes: SCOPES }); }
 }
 
 // ---- UI controls ----
