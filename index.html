@@ -7,8 +7,12 @@
 <script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@3/lib/msal-browser.min.js"></script>
 <style>
   :root { color-scheme: light;
-    --purple:#7c5cff; --purple-dark:#5b3df0; --purple-light:#f0ecff;
-    --ink:#1a1a2e; --muted:#6b7280; --line:#e5e7eb; --bg:#fafafa; --card:#ffffff;
+    /* WeTransact brand */
+    --purple:#7C6FF7;        /* Light Accent */
+    --purple-dark:#5E43C8;   /* primary hover/links */
+    --purple-light:#e8e5ff;  /* Light Contrast */
+    --ink:#2C1C6C;           /* deep ink */
+    --muted:#6b7280; --line:#E2DBFF; --bg:#FBF9FF; --card:#ffffff;
   }
   * { box-sizing:border-box; margin:0; padding:0; }
   body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--ink); font-size:14px; }
@@ -39,18 +43,18 @@
 
   .status { font-size:13px; color:var(--muted); margin:8px 0; }
   .grid { display:grid; gap:10px; align-items:start; }
-  .day { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px; min-height:80px; }
+  .day { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:10px; min-height:80px; box-shadow:0 1px 3px rgba(44,28,108,.06); }
   .day h3 { font-size:13px; font-weight:600; text-align:center; padding-bottom:8px; border-bottom:1px solid var(--line); margin-bottom:8px; }
   .day h3 .dnum { color:var(--muted); font-weight:400; font-size:12px; display:block; }
   .slot { display:block; width:100%; margin:4px 0; padding:7px 4px; text-align:center; font-size:13px; border:1px solid var(--line); border-radius:8px; background:#fff; cursor:pointer; color:var(--ink); transition:all .1s; }
   .slot:hover { border-color:var(--purple); background:var(--purple-light); }
   .slot.sel { background:var(--purple); border-color:var(--purple); color:#fff; font-weight:600; }
-  .busy { display:block; width:100%; margin:4px 0; padding:6px 6px; font-size:11.5px; border-radius:8px; background:#f3f4f6; border:1px dashed #d1d5db; color:var(--muted); text-align:left; line-height:1.35; cursor:default; }
-  .busy .bt { font-weight:600; color:#4b5563; }
+  .busy { display:block; width:100%; margin:4px 0; padding:6px 6px; font-size:11.5px; border-radius:8px; background:#F2EEFF; border:1px dashed #C9BCFF; color:var(--muted); text-align:left; line-height:1.35; cursor:default; }
+  .busy .bt { font-weight:600; color:#402C93; }
   .busy .bn { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; }
   .noslots { font-size:12px; color:var(--muted); text-align:center; padding:12px 0; }
 
-  .panel { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; margin-top:16px; }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; margin-top:16px; box-shadow:0 1px 3px rgba(44,28,108,.06); }
   .panel-head { display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
   .panel-head h2 { font-size:14px; }
   .panel-head .grow { flex:1; }
@@ -67,7 +71,7 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>📅 Availability Picker</h1>
+    <h1><span style="color:#7C6FF7">we</span><span style="color:#2C1C6C">transact</span> <span style="font-weight:400;color:var(--muted)">· Availability</span></h1>
     <div class="grow"></div>
     <span class="who" id="who"></span>
     <button class="linklike" id="signOut" style="display:none">Sign out</button>
